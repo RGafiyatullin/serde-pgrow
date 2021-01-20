@@ -1,0 +1,19 @@
+[package]
+name = "serde-pgrow"
+version = "0.1.0"
+authors = ["Roman Gafiyatullin <r.gafiyatullin@me.com>"]
+edition = "2018"
+license-file = "LICENSE"
+repository = "https://github.com/RGafiyatullin/serde-pgrow"
+description = "Deserialize a serde-type from a PgRow"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+tokio-postgres = "^0.7"
+serde = "^1"
+
+[dev-dependencies]
+tokio = {version = "^1", features = ["full"]}
+serde = {version = "^1", features = ["derive"]}
+futures = {version = "^0.3"}
