@@ -6,18 +6,18 @@ use crate::Error;
 use super::Row;
 
 #[derive(Debug)]
-pub struct SA<'de> {
+pub struct SA<'a> {
     iter: std::ops::Range<usize>,
-    de: Row<'de>,
+    de: Row<'a>,
 }
 
-impl<'de> SA<'de> {
-    pub fn new(len: usize, de: Row<'de>) -> Self {
+impl<'a> SA<'a> {
+    pub fn new(len: usize, de: Row<'a>) -> Self {
         Self { iter: 0..len, de }
     }
 }
 
-impl<'de> SeqAccess<'de> for SA<'de> {
+impl<'a, 'de> SeqAccess<'de> for SA<'a> {
     type Error = Error;
 
     fn next_element_seed<T>(&mut self, seed: T) -> Result<Option<T::Value>, Self::Error>

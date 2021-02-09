@@ -4,17 +4,17 @@ use ::serde::Deserializer;
 use crate::Error;
 
 #[derive(Debug)]
-pub struct FieldName<'de> {
-    input: &'de str,
+pub struct FieldName<'a> {
+    input: &'a str,
 }
 
-impl<'de> FieldName<'de> {
-    pub fn new(input: &'de str) -> Self {
+impl<'a> FieldName<'a> {
+    pub fn new(input: &'a str) -> Self {
         Self { input }
     }
 }
 
-impl<'de> Deserializer<'de> for FieldName<'de> {
+impl<'a, 'de> Deserializer<'de> for FieldName<'a> {
     type Error = Error;
 
     fn deserialize_any<V>(self, visitor: V) -> Result<V::Value, Self::Error>

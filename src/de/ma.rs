@@ -7,14 +7,14 @@ use super::FieldName;
 use super::Row;
 
 #[derive(Debug)]
-pub struct MA<'de> {
-    keys: std::slice::Iter<'static, &'static str>,
-    values: std::slice::Iter<'static, &'static str>,
-    de: Row<'de>,
+pub struct MA<'a> {
+    keys: std::slice::Iter<'a, &'a str>,
+    values: std::slice::Iter<'a, &'a str>,
+    de: Row<'a>,
 }
 
-impl<'de> MA<'de> {
-    pub fn new(fields: &'static [&'static str], de: Row<'de>) -> Self {
+impl<'a> MA<'a> {
+    pub fn new(fields: &'a [&'a str], de: Row<'a>) -> Self {
         Self {
             keys: fields.into_iter(),
             values: fields.into_iter(),
@@ -23,7 +23,7 @@ impl<'de> MA<'de> {
     }
 }
 
-impl<'de> MapAccess<'de> for MA<'de> {
+impl<'a, 'de> MapAccess<'de> for MA<'a> {
     type Error = Error;
 
     fn next_key_seed<K>(&mut self, seed: K) -> Result<Option<K::Value>, Self::Error>

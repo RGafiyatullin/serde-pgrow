@@ -7,32 +7,46 @@ use super::SA;
 use crate::Error;
 
 #[derive(Debug)]
-pub struct Row<'de> {
-    pg_row: &'de PgRow,
+pub struct Row<'a> {
+    pg_row: &'a PgRow,
     col_prefix: Option<String>,
+    col_names: Vec<&'a str>,
 }
 
-impl<'de> Row<'de> {
+impl<'a> Row<'a> {
     pub fn col_name(&self) -> &str {
         self.col_prefix.as_ref().map(|s| s.as_ref()).unwrap_or("")
     }
 }
 
-impl<'de> Row<'de> {
-    pub fn new(pg_row: &'de PgRow) -> Self {
+impl<'a> Row<'a> {
+    pub fn new(pg_row: &'a PgRow) -> Self {
+        let col_names = pg_row
+            .columns()
+            .into_iter()
+            .map(|c| c.name())
+            .collect::<Vec<_>>();
         Self {
             pg_row,
             col_prefix: None,
+            col_names,
         }
     }
-    pub fn new_with_prefix<S: AsRef<str>>(pg_row: &'de PgRow, prefix: S) -> Self {
+    pub fn new_with_prefix<S: AsRef<str>>(pg_row: &'a PgRow, prefix: S) -> Self {
+        let col_names = pg_row
+            .columns()
+            .into_iter()
+            .map(|c| c.name())
+            .filter(|c| c.starts_with(prefix.as_ref()))
+            .collect::<Vec<_>>();
         Self {
             pg_row,
             col_prefix: Some(prefix.as_ref().to_owned()),
+            col_names,
         }
     }
 
-    pub fn pg_row(&self) -> &'de PgRow {
+    pub fn pg_row(&self) -> &'a PgRow {
         self.pg_row
     }
     pub fn col_prefix(&self) -> Option<&str> {
@@ -40,14 +54,39 @@ impl<'de> Row<'de> {
     }
 }
 
-impl<'de> ::serde::Deserializer<'de> for Row<'de> {
+impl<'a, 'de> ::serde::Deserializer<'de> for Row<'a> {
     type Error = Error;
 
-    fn deserialize_any<V>(self, _visitor: V) -> Result<V::Value, Self::Error>
+    fn deserialize_any<V>(self, visitor: V) -> Result<V::Value, Self::Error>
     where
         V: Visitor<'de>,
     {
-        Err(Self::Error::Unimplemented)
+        if self.col_names.is_empty() {
+            self.deserialize_unit(visitor)
+        } else if self.col_names.len() == 1 {
+            let col_name = self.col_names.first().unwrap();
+            if let Ok(v) = self.pg_row.try_get::<_, bool>(col_name) {
+                visitor.visit_bool(v)
+            } else if let Ok(v) = self.pg_row.try_get::<_, i8>(col_name) {
+                visitor.visit_i8(v)
+            } else if let Ok(v) = self.pg_row.try_get::<_, i16>(col_name) {
+                visitor.visit_i16(v)
+            } else if let Ok(v) = self.pg_row.try_get::<_, i32>(col_name) {
+                visitor.visit_i32(v)
+            } else if let Ok(v) = self.pg_row.try_get::<_, i64>(col_name) {
+                visitor.visit_i64(v)
+            } else if let Ok(v) = self.pg_row.try_get::<_, u32>(col_name) {
+                visitor.visit_u32(v)
+            } else if let Ok(v) = self.pg_row.try_get::<_, f32>(col_name) {
+                visitor.visit_f32(v)
+            } else if let Ok(v) = self.pg_row.try_get::<_, String>(col_name) {
+                visitor.visit_string(v)
+            } else {
+                Err(Self::Error::Unimplemented)
+            }
+        } else {
+            self.deserialize_map(visitor)
+        }
     }
 
     ::serde::forward_to_deserialize_any! {
@@ -69,11 +108,26 @@ impl<'de> ::serde::Deserializer<'de> for Row<'de> {
         seq
         // tuple
         tuple_struct
-        map
+        // map
         // struct
         enum
         identifier
         ignored_any
+    }
+
+    fn deserialize_map<V>(self, visitor: V) -> Result<V::Value, Self::Error>
+    where
+        V: Visitor<'de>,
+    {
+        let ma = MA::new(
+            &self.col_names[..],
+            Self {
+                pg_row: self.pg_row,
+                col_names: self.col_names.to_owned(),
+                col_prefix: self.col_prefix.to_owned(),
+            },
+        );
+        visitor.visit_map(ma)
     }
 
     fn deserialize_struct<V>(
