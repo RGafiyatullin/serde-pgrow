@@ -82,7 +82,7 @@ impl<'a, 'de> ::serde::Deserializer<'de> for Row<'a> {
             } else if let Ok(v) = self.pg_row.try_get::<_, String>(col_name) {
                 visitor.visit_string(v)
             } else {
-                Err(Self::Error::Unimplemented)
+                self.deserialize_option(visitor)
             }
         } else {
             self.deserialize_map(visitor)
