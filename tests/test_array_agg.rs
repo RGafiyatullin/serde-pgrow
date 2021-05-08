@@ -1,0 +1,77 @@
+use ::futures::prelude::*;
+use ::serde_pgrow::prelude::*;
+
+#[derive(Debug, ::serde::Deserialize)]
+struct Record {
+    id: i64,
+    sub_ids: Vec<i64>,
+    notes: Vec<String>,
+}
+
+#[tokio::test]
+#[ignore]
+async fn test_flatten() {
+    let (client, connection) = ::tokio_postgres::connect(
+        "host=127.0.0.1 user=tests password=tests dbname=tests",
+        ::tokio_postgres::NoTls,
+    )
+    .await
+    .unwrap();
+
+    let rows = async move {
+        client
+            .query(
+                /*
+                tests=# SELECT
+                tests-#                         R.id,
+                tests-#                         array_agg(R.sub_id) sub_ids,
+                tests-#                         array_agg(R.note) notes
+                tests-#                     FROM (
+                tests(#                         SELECT 1 :: BIGINT id, 1 :: BIGINT sub_id, '1.1' note
+                tests(#                         UNION ALL
+                tests(#                         SELECT 1 :: BIGINT, 2 :: BIGINT, '1.2'
+                tests(#                         UNION ALL
+                tests(#                         SELECT 2 :: BIGINT, 1 :: BIGINT, '2.1'
+                tests(#                         UNION ALL
+                tests(#                         SELECT 2 :: BIGINT, 2 :: BIGINT, '2.2'
+                tests(#                     ) R
+                tests-#                     GROUP BY
+                tests-#                         R.id
+                tests-#                     ORDER BY
+                tests-#                         R.id;
+                id  | sub_ids |   notes
+                ----+---------+-----------
+                1   | {1,2}   | {1.1,1.2}
+                2   | {1,2}   | {2.1,2.2}
+                (2 rows)
+                */
+                r#"
+                    SELECT 
+                        R.id, 
+                        array_agg(R.sub_id) sub_ids, 
+                        array_agg(R.note) notes 
+                    FROM (
+                        SELECT 1 :: BIGINT id, 1 :: BIGINT sub_id, '1.1' note
+                        UNION ALL
+                        SELECT 1 :: BIGINT, 2 :: BIGINT, '1.2'
+                        UNION ALL
+                        SELECT 2 :: BIGINT, 1 :: BIGINT, '2.1'
+                        UNION ALL
+                        SELECT 2 :: BIGINT, 2 :: BIGINT, '2.2'
+                    ) R
+                    GROUP BY 
+                        R.id
+                    ORDER BY
+                        R.id
+                "#,
+                &[],
+            )
+            .await
+            .unwrap()
+    };
+
+    let (rows, _) = future::join(rows, connection).await;
+
+    let values = rows.cast::<Record>().unwrap();
+    println!("values: {:#?}", values);
+}

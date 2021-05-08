@@ -3,6 +3,7 @@ use ::tokio_postgres::Row as PgRow;
 
 use super::MA;
 use super::SA;
+use super::VA;
 
 use crate::Error;
 
@@ -65,6 +66,7 @@ impl<'a, 'de> ::serde::Deserializer<'de> for Row<'a> {
             self.deserialize_unit(visitor)
         } else if self.col_names.len() == 1 {
             let col_name = self.col_names.first().unwrap();
+
             if let Ok(v) = self.pg_row.try_get::<_, bool>(col_name) {
                 visitor.visit_bool(v)
             } else if let Ok(v) = self.pg_row.try_get::<_, i8>(col_name) {
@@ -81,6 +83,22 @@ impl<'a, 'de> ::serde::Deserializer<'de> for Row<'a> {
                 visitor.visit_f32(v)
             } else if let Ok(v) = self.pg_row.try_get::<_, String>(col_name) {
                 visitor.visit_string(v)
+            } else if let Ok(v) = self.pg_row.try_get::<_, Vec<bool>>(col_name) {
+                visitor.visit_seq(VA::from(v))
+            } else if let Ok(v) = self.pg_row.try_get::<_, Vec<i8>>(col_name) {
+                visitor.visit_seq(VA::from(v))
+            } else if let Ok(v) = self.pg_row.try_get::<_, Vec<i16>>(col_name) {
+                visitor.visit_seq(VA::from(v))
+            } else if let Ok(v) = self.pg_row.try_get::<_, Vec<i32>>(col_name) {
+                visitor.visit_seq(VA::from(v))
+            } else if let Ok(v) = self.pg_row.try_get::<_, Vec<i64>>(col_name) {
+                visitor.visit_seq(VA::from(v))
+            } else if let Ok(v) = self.pg_row.try_get::<_, Vec<u32>>(col_name) {
+                visitor.visit_seq(VA::from(v))
+            } else if let Ok(v) = self.pg_row.try_get::<_, Vec<f32>>(col_name) {
+                visitor.visit_seq(VA::from(v))
+            } else if let Ok(v) = self.pg_row.try_get::<_, Vec<String>>(col_name) {
+                visitor.visit_seq(VA::from(v))
             } else {
                 self.deserialize_option(visitor)
             }

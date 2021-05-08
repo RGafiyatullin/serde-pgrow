@@ -20,6 +20,7 @@ struct FlatOpt {
 }
 
 #[tokio::test]
+#[ignore]
 async fn test_flatten_opt_positive() {
     let (client, connection) = ::tokio_postgres::connect(
         "host=127.0.0.1 user=tests password=tests dbname=tests",

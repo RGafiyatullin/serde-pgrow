@@ -20,9 +20,10 @@ struct Flat {
 }
 
 #[tokio::test]
+#[ignore]
 async fn test_flatten() {
     let (client, connection) = ::tokio_postgres::connect(
-        "host=127.0.0.1 port=5431 user=tests password=tests dbname=tests",
+        "host=127.0.0.1 user=tests password=tests dbname=tests",
         ::tokio_postgres::NoTls,
     )
     .await
