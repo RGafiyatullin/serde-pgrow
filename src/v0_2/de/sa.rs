@@ -1,7 +1,7 @@
 use ::serde::de::DeserializeSeed;
 use ::serde::de::SeqAccess;
 
-use crate::Error;
+use crate::v0_2::Error;
 
 use super::Row;
 

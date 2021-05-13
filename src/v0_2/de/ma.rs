@@ -1,7 +1,7 @@
 use ::serde::de::DeserializeSeed;
 use ::serde::de::MapAccess;
 
-use crate::Error;
+use crate::v0_2::Error;
 
 use super::FieldName;
 use super::Row;

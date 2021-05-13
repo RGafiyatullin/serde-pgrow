@@ -1,6 +1,6 @@
 [package]
 name = "serde-pgrow"
-version = "0.2.2"
+version = "0.3.0"
 authors = ["Roman Gafiyatullin <r.gafiyatullin@me.com>"]
 edition = "2018"
 license-file = "LICENSE"
@@ -10,12 +10,17 @@ description = "Deserialize a serde-type from a PgRow"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-tokio-postgres = "^0.7"
+tokio-postgres = { version = "^0.7", features = ["with-serde_json-1"] }
 serde = "^1"
 derive_more = "^0.99"
+thiserror = "^1"
+eyre = "^0.6"
+log = "^0.4"
 
 [dev-dependencies]
+eyre = "^0.6"
 tokio = {version = "^1", features = ["full"]}
 serde = {version = "^1", features = ["derive"]}
 serde_json = "^1"
 futures = {version = "^0.3"}
+pretty_env_logger = "^0.4"

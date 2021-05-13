@@ -1,7 +1,7 @@
 use ::serde::de::Visitor;
 use ::serde::Deserializer;
 
-use crate::Error;
+use crate::v0_2::Error;
 
 #[derive(Debug)]
 pub struct FieldName<'a> {

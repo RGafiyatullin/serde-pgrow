@@ -1,50 +1,51 @@
-use ::serde::de::DeserializeOwned;
-use ::tokio_postgres::Row as PgRow;
+use ::serde::Deserialize;
 
-use crate::de::Row;
-use crate::Error;
+use crate::de::DeRow;
+use crate::de::PgDeError;
+use crate::pg::*;
 
 pub trait PgRowExt {
-    fn cast<T>(&self) -> Result<T, Error>
+    fn cast<'de, T>(&self) -> Result<T, PgDeError>
     where
-        T: DeserializeOwned;
+        T: Deserialize<'de>;
 }
 
 impl PgRowExt for PgRow {
-    fn cast<T>(&self) -> Result<T, Error>
+    fn cast<'de, T>(&self) -> Result<T, PgDeError>
     where
-        T: DeserializeOwned,
+        T: Deserialize<'de>,
     {
-        let de = Row::new(self);
+        log::trace!("DeRow for {}", std::any::type_name::<T>());
+        let de = DeRow::new(self);
         ::serde::Deserialize::deserialize(de)
     }
 }
 
 pub trait PgRowOptionExt {
-    fn cast<T>(&self) -> Result<Option<T>, Error>
+    fn cast<'de, T>(&self) -> Result<Option<T>, PgDeError>
     where
-        T: DeserializeOwned;
+        T: Deserialize<'de>;
 }
 
 impl PgRowOptionExt for Option<&PgRow> {
-    fn cast<T>(&self) -> Result<Option<T>, Error>
+    fn cast<'de, T>(&self) -> Result<Option<T>, PgDeError>
     where
-        T: DeserializeOwned,
+        T: Deserialize<'de>,
     {
         self.as_ref().map(|r| r.cast()).transpose()
     }
 }
 
 pub trait PgSeqExt {
-    fn cast<T>(&self) -> Result<Vec<T>, Error>
+    fn cast<'de, T>(&self) -> Result<Vec<T>, PgDeError>
     where
-        T: DeserializeOwned;
+        T: Deserialize<'de>;
 }
 
 impl PgSeqExt for Vec<PgRow> {
-    fn cast<T>(&self) -> Result<Vec<T>, Error>
+    fn cast<'de, T>(&self) -> Result<Vec<T>, PgDeError>
     where
-        T: DeserializeOwned,
+        T: Deserialize<'de>,
     {
         self.iter().map(|r| r.cast()).collect()
     }

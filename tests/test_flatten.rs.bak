@@ -1,7 +1,7 @@
 use std::collections::HashMap;
 
 use ::futures::prelude::*;
-use ::serde_pgrow::prelude::*;
+use ::serde_pgrow::v0_2::prelude::*;
 
 #[derive(::serde::Serialize, ::serde::Deserialize, Debug, PartialEq)]
 #[serde(untagged)]

@@ -2,7 +2,7 @@ use ::serde::de::DeserializeSeed;
 use ::serde::de::SeqAccess;
 use ::serde::de::Visitor;
 
-use crate::Error;
+use crate::v0_2::Error;
 
 #[derive(Debug)]
 pub struct VA<T>(std::vec::IntoIter<T>);

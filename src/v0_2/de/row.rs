@@ -5,7 +5,7 @@ use super::MA;
 use super::SA;
 use super::VA;
 
-use crate::Error;
+use crate::v0_2::Error;
 
 #[derive(Debug)]
 pub struct Row<'a> {

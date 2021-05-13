@@ -2,7 +2,7 @@ use std::collections::HashMap;
 
 use ::futures::prelude::*;
 use ::serde_json::Value as JsValue;
-use ::serde_pgrow::prelude::*;
+use ::serde_pgrow::v0_2::prelude::*;
 
 #[derive(::serde::Serialize, ::serde::Deserialize, Debug)]
 pub struct StructOne {
