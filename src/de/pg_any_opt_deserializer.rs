@@ -7,11 +7,11 @@ impl<'a, 'de> Deserializer<'de> for PgAnyOpt<'a> {
     where
         V: Visitor<'de>,
     {
-        log::trace!(
-            "deserialize_any::<{}>(...) [V::Value = {}]",
-            std::any::type_name::<V>(),
-            std::any::type_name::<V::Value>()
-        );
+        // log::trace!(
+        //     "deserialize_any::<{}>(...) [V::Value = {}]",
+        //     std::any::type_name::<V>(),
+        //     std::any::type_name::<V::Value>()
+        // );
         if let Some(pg_any) = self.inner {
             pg_any.deserialize_any(visitor)
         } else {
@@ -65,10 +65,10 @@ impl<'a, 'de> Deserializer<'de> for PgAnyOpt<'a> {
     where
         V: Visitor<'de>,
     {
-        log::trace!(
-            "deserialize_bool(self, ...) [V::Value = {}]",
-            std::any::type_name::<V::Value>()
-        );
+        // log::trace!(
+        //     "deserialize_bool(self, ...) [V::Value = {}]",
+        //     std::any::type_name::<V::Value>()
+        // );
 
         self.inner
             .ok_or(PgDeError::WasNull)?
@@ -79,10 +79,10 @@ impl<'a, 'de> Deserializer<'de> for PgAnyOpt<'a> {
     where
         V: Visitor<'de>,
     {
-        log::trace!(
-            "deserialize_i8(self, ...) [V::Value = {}]",
-            std::any::type_name::<V::Value>()
-        );
+        // log::trace!(
+        //     "deserialize_i8(self, ...) [V::Value = {}]",
+        //     std::any::type_name::<V::Value>()
+        // );
 
         self.inner
             .ok_or(PgDeError::WasNull)?
@@ -93,10 +93,10 @@ impl<'a, 'de> Deserializer<'de> for PgAnyOpt<'a> {
     where
         V: Visitor<'de>,
     {
-        log::trace!(
-            "deserialize_i16(self, ...) [V::Value = {}]",
-            std::any::type_name::<V::Value>()
-        );
+        // log::trace!(
+        //     "deserialize_i16(self, ...) [V::Value = {}]",
+        //     std::any::type_name::<V::Value>()
+        // );
 
         self.inner
             .ok_or(PgDeError::WasNull)?
@@ -107,10 +107,10 @@ impl<'a, 'de> Deserializer<'de> for PgAnyOpt<'a> {
     where
         V: Visitor<'de>,
     {
-        log::trace!(
-            "deserialize_i32(self, ...) [V::Value = {}]",
-            std::any::type_name::<V::Value>()
-        );
+        // log::trace!(
+        //     "deserialize_i32(self, ...) [V::Value = {}]",
+        //     std::any::type_name::<V::Value>()
+        // );
 
         self.inner
             .ok_or(PgDeError::WasNull)?
@@ -121,10 +121,10 @@ impl<'a, 'de> Deserializer<'de> for PgAnyOpt<'a> {
     where
         V: Visitor<'de>,
     {
-        log::trace!(
-            "deserialize_i64(self, ...) [V::Value = {}]",
-            std::any::type_name::<V::Value>()
-        );
+        // log::trace!(
+        //     "deserialize_i64(self, ...) [V::Value = {}]",
+        //     std::any::type_name::<V::Value>()
+        // );
 
         self.inner
             .ok_or(PgDeError::WasNull)?
@@ -135,10 +135,10 @@ impl<'a, 'de> Deserializer<'de> for PgAnyOpt<'a> {
     where
         V: Visitor<'de>,
     {
-        log::trace!(
-            "deserialize_u8(self, ...) [V::Value = {}]",
-            std::any::type_name::<V::Value>()
-        );
+        // log::trace!(
+        //     "deserialize_u8(self, ...) [V::Value = {}]",
+        //     std::any::type_name::<V::Value>()
+        // );
 
         self.inner
             .ok_or(PgDeError::WasNull)?
@@ -149,10 +149,10 @@ impl<'a, 'de> Deserializer<'de> for PgAnyOpt<'a> {
     where
         V: Visitor<'de>,
     {
-        log::trace!(
-            "deserialize_u16(self, ...) [V::Value = {}]",
-            std::any::type_name::<V::Value>()
-        );
+        // log::trace!(
+        //     "deserialize_u16(self, ...) [V::Value = {}]",
+        //     std::any::type_name::<V::Value>()
+        // );
 
         self.inner
             .ok_or(PgDeError::WasNull)?
@@ -163,10 +163,10 @@ impl<'a, 'de> Deserializer<'de> for PgAnyOpt<'a> {
     where
         V: Visitor<'de>,
     {
-        log::trace!(
-            "deserialize_u32(self, ...) [V::Value = {}]",
-            std::any::type_name::<V::Value>()
-        );
+        // log::trace!(
+        //     "deserialize_u32(self, ...) [V::Value = {}]",
+        //     std::any::type_name::<V::Value>()
+        // );
 
         self.inner
             .ok_or(PgDeError::WasNull)?
@@ -177,10 +177,10 @@ impl<'a, 'de> Deserializer<'de> for PgAnyOpt<'a> {
     where
         V: Visitor<'de>,
     {
-        log::trace!(
-            "deserialize_u64(self, ...) [V::Value = {}]",
-            std::any::type_name::<V::Value>()
-        );
+        // log::trace!(
+        //     "deserialize_u64(self, ...) [V::Value = {}]",
+        //     std::any::type_name::<V::Value>()
+        // );
 
         self.inner
             .ok_or(PgDeError::WasNull)?
@@ -191,10 +191,10 @@ impl<'a, 'de> Deserializer<'de> for PgAnyOpt<'a> {
     where
         V: Visitor<'de>,
     {
-        log::trace!(
-            "deserialize_f32(self, ...) [V::Value = {}]",
-            std::any::type_name::<V::Value>()
-        );
+        // log::trace!(
+        //     "deserialize_f32(self, ...) [V::Value = {}]",
+        //     std::any::type_name::<V::Value>()
+        // );
 
         self.inner
             .ok_or(PgDeError::WasNull)?
@@ -205,10 +205,10 @@ impl<'a, 'de> Deserializer<'de> for PgAnyOpt<'a> {
     where
         V: Visitor<'de>,
     {
-        log::trace!(
-            "deserialize_f64(self, ...) [V::Value = {}]",
-            std::any::type_name::<V::Value>()
-        );
+        // log::trace!(
+        //     "deserialize_f64(self, ...) [V::Value = {}]",
+        //     std::any::type_name::<V::Value>()
+        // );
 
         self.inner
             .ok_or(PgDeError::WasNull)?
@@ -219,10 +219,10 @@ impl<'a, 'de> Deserializer<'de> for PgAnyOpt<'a> {
     where
         V: Visitor<'de>,
     {
-        log::trace!(
-            "deserialize_string(self, ...) [V::Value = {}]",
-            std::any::type_name::<V::Value>()
-        );
+        // log::trace!(
+        //     "deserialize_string(self, ...) [V::Value = {}]",
+        //     std::any::type_name::<V::Value>()
+        // );
 
         self.inner
             .ok_or(PgDeError::WasNull)?
@@ -233,10 +233,10 @@ impl<'a, 'de> Deserializer<'de> for PgAnyOpt<'a> {
     where
         V: Visitor<'de>,
     {
-        log::trace!(
-            "deserialize_option(self, ...) [V::Value = {}]",
-            std::any::type_name::<V::Value>()
-        );
+        // log::trace!(
+        //     "deserialize_option(self, ...) [V::Value = {}]",
+        //     std::any::type_name::<V::Value>()
+        // );
         if let Some(pg_any) = self.inner {
             visitor.visit_some(pg_any)
         } else {
@@ -252,11 +252,11 @@ impl<'a, 'de> Deserializer<'de> for PgAnyOpt<'a> {
     where
         V: Visitor<'de>,
     {
-        log::trace!(
-            "deserialize_newtype_struct(self, name: {:?}, ...) [V::Value = {}]",
-            name,
-            std::any::type_name::<V::Value>()
-        );
+        // log::trace!(
+        //     "deserialize_newtype_struct(self, name: {:?}, ...) [V::Value = {}]",
+        //     name,
+        //     std::any::type_name::<V::Value>()
+        // );
         self.inner
             .ok_or(PgDeError::WasNull)?
             .deserialize_newtype_struct(name, visitor)

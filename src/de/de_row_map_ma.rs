@@ -9,11 +9,11 @@ impl<'a, 'de> MapAccess<'de> for DeRowMap<'a> {
     {
         let field_name_opt = self.keys.next();
 
-        log::trace!(
-            "next_key_seed(&mut self, ...) [K::Value = {}] => {:?}",
-            std::any::type_name::<K::Value>(),
-            field_name_opt
-        );
+        // log::trace!(
+        //     "next_key_seed(&mut self, ...) [K::Value = {}] => {:?}",
+        //     std::any::type_name::<K::Value>(),
+        //     field_name_opt
+        // );
 
         field_name_opt
             .map(|field_name| {

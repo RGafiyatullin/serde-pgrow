@@ -13,13 +13,11 @@ description = "Deserialize a serde-type from a PgRow"
 tokio-postgres = { version = "^0.7", features = ["with-serde_json-1"] }
 serde = "^1"
 serde_json = "^1"
-derive_more = "^0.99"
 thiserror = "^1"
 eyre = "^0.6"
-log = "^0.4"
+# log = "^0.4"
 
 [dev-dependencies]
-eyre = "^0.6"
 tokio = {version = "^1", features = ["full"]}
 serde = {version = "^1", features = ["derive"]}
 futures = {version = "^0.3"}
