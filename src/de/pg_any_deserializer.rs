@@ -39,6 +39,22 @@ impl<'a, 'de> Deserializer<'de> for PgAny<'a> {
             PgType::FLOAT8 => self.deserialize_f64(visitor),
             PgType::FLOAT8_ARRAY => self.deserialize_seq(visitor),
 
+            PgType::JSON => {
+                let js_value = <JsValue as PgFromSql>::from_sql(&self.pg_type, self.raw_data)
+                    .map_err(PgDeError::cast_error)?;
+                let de = DeJsValue::new(js_value);
+                de.deserialize_any(visitor)
+            }
+            PgType::JSONB => {
+                let js_value = <JsValue as PgFromSql>::from_sql(&self.pg_type, self.raw_data)
+                    .map_err(PgDeError::cast_error)?;
+                let de = DeJsValue::new(js_value);
+                de.deserialize_any(visitor)
+            }
+
+            PgType::JSONB_ARRAY => self.deserialize_seq(visitor),
+            PgType::JSON_ARRAY => self.deserialize_seq(visitor),
+
             unsupported => Err(PgDeError::UnsupportedType(unsupported)),
         }
     }
