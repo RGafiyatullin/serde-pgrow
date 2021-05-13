@@ -43,7 +43,7 @@ impl<'a> DeRow<'a> {
         }
     }
 
-    pub(super) fn require_single_column<'de, T, V>(self) -> Result<DeCol<'a>, PgDeError>
+    pub(super) fn require_single_column<'de, T, V>(self) -> Result<PgAnyOpt<'a>, PgDeError>
     where
         V: Visitor<'de>,
     {
@@ -56,7 +56,11 @@ impl<'a> DeRow<'a> {
 
         if self.cols.len() == 1 {
             let col = self.cols[0];
-            Ok(DeCol::new(self.row, col))
+            Ok(self
+                .row
+                .try_get::<_, Option<PgAny>>(col.name())
+                .map(From::from)
+                .map_err(PgDeError::PgError)?)
         } else {
             Err(PgDeError::Custom(
                 format!(

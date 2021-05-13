@@ -1,3 +1,5 @@
+use std::error::Error as StdError;
+
 use ::serde::de::Error as DeError;
 use ::tokio_postgres::Error as PgError;
 
@@ -16,8 +18,20 @@ pub enum PgDeError {
     #[error("PgDeError::UnsupportedType: {:?}", _0)]
     UnsupportedType(PgType),
 
+    #[error("PgDeError::CastError")]
+    CastError(#[source] Box<dyn StdError + Send + Sync>),
+
+    #[error("PgDeError::WasNull")]
+    WasNull,
+
     #[error("PgDeError::Unimplemented: {} [{}]", _0, _1)]
     Unimplemented(&'static str, &'static str),
+}
+
+impl PgDeError {
+    pub fn cast_error(e: Box<dyn StdError + Send + Sync>) -> Self {
+        Self::CastError(e)
+    }
 }
 
 impl From<PgError> for PgDeError {

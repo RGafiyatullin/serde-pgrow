@@ -1,6 +1,6 @@
 use super::*;
 
-impl<'a, 'de> Deserializer<'de> for DeCol<'a> {
+impl<'a, 'de> Deserializer<'de> for PgAny<'a> {
     type Error = crate::de::PgDeError;
 
     fn deserialize_any<V>(self, _visitor: V) -> Result<V::Value, Self::Error>
@@ -69,12 +69,11 @@ impl<'a, 'de> Deserializer<'de> for DeCol<'a> {
             std::any::type_name::<V::Value>()
         );
 
-        let () = util::ensure_pg_type(&self.col, &[PgType::BOOL])?;
+        let () = util::ensure_pg_type(&self.pg_type, &[PgType::BOOL])?;
 
         visitor.visit_bool(
-            self.row
-                .try_get(self.col.name())
-                .map_err(PgDeError::PgError)?,
+            <bool as PgFromSql>::from_sql(&self.pg_type, self.raw_data)
+                .map_err(PgDeError::cast_error)?,
         )
     }
 
@@ -102,11 +101,9 @@ impl<'a, 'de> Deserializer<'de> for DeCol<'a> {
             std::any::type_name::<V::Value>()
         );
 
-        let value = match self.col.type_() {
-            &PgType::INT2 => self
-                .row
-                .try_get::<_, i16>(self.col.name())
-                .map_err(PgDeError::PgError)?,
+        let value = match self.pg_type {
+            PgType::INT2 => <i16 as PgFromSql>::from_sql(&self.pg_type, self.raw_data)
+                .map_err(PgDeError::cast_error)?,
 
             unsupported => Err(PgDeError::UnsupportedType(unsupported.to_owned()))?,
         };
@@ -123,15 +120,11 @@ impl<'a, 'de> Deserializer<'de> for DeCol<'a> {
             std::any::type_name::<V::Value>()
         );
 
-        let value = match self.col.type_() {
-            &PgType::INT2 => self
-                .row
-                .try_get::<_, i16>(self.col.name())
-                .map_err(PgDeError::PgError)? as i32,
-            &PgType::INT4 => self
-                .row
-                .try_get::<_, i32>(self.col.name())
-                .map_err(PgDeError::PgError)?,
+        let value = match self.pg_type {
+            PgType::INT2 => <i16 as PgFromSql>::from_sql(&self.pg_type, self.raw_data)
+                .map_err(PgDeError::cast_error)? as i32,
+            PgType::INT4 => <i32 as PgFromSql>::from_sql(&self.pg_type, self.raw_data)
+                .map_err(PgDeError::cast_error)?,
 
             unsupported => Err(PgDeError::UnsupportedType(unsupported.to_owned()))?,
         };
@@ -148,19 +141,13 @@ impl<'a, 'de> Deserializer<'de> for DeCol<'a> {
             std::any::type_name::<V::Value>()
         );
 
-        let value = match self.col.type_() {
-            &PgType::INT2 => self
-                .row
-                .try_get::<_, i16>(self.col.name())
-                .map_err(PgDeError::PgError)? as i64,
-            &PgType::INT4 => self
-                .row
-                .try_get::<_, i32>(self.col.name())
-                .map_err(PgDeError::PgError)? as i64,
-            &PgType::INT8 => self
-                .row
-                .try_get::<_, i64>(self.col.name())
-                .map_err(PgDeError::PgError)?,
+        let value = match self.pg_type {
+            PgType::INT2 => <i16 as PgFromSql>::from_sql(&self.pg_type, self.raw_data)
+                .map_err(PgDeError::cast_error)? as i64,
+            PgType::INT4 => <i32 as PgFromSql>::from_sql(&self.pg_type, self.raw_data)
+                .map_err(PgDeError::cast_error)? as i64,
+            PgType::INT8 => <i64 as PgFromSql>::from_sql(&self.pg_type, self.raw_data)
+                .map_err(PgDeError::cast_error)?,
 
             unsupported => Err(PgDeError::UnsupportedType(unsupported.to_owned()))?,
         };
@@ -192,11 +179,9 @@ impl<'a, 'de> Deserializer<'de> for DeCol<'a> {
             std::any::type_name::<V::Value>()
         );
 
-        let value = match self.col.type_() {
-            &PgType::INT2 => self
-                .row
-                .try_get::<_, i16>(self.col.name())
-                .map_err(PgDeError::PgError)? as u16,
+        let value = match self.pg_type {
+            PgType::INT2 => <i16 as PgFromSql>::from_sql(&self.pg_type, self.raw_data)
+                .map_err(PgDeError::cast_error)? as u16,
 
             unsupported => Err(PgDeError::UnsupportedType(unsupported.to_owned()))?,
         };
@@ -213,15 +198,11 @@ impl<'a, 'de> Deserializer<'de> for DeCol<'a> {
             std::any::type_name::<V::Value>()
         );
 
-        let value = match self.col.type_() {
-            &PgType::INT2 => self
-                .row
-                .try_get::<_, i16>(self.col.name())
-                .map_err(PgDeError::PgError)? as u32,
-            &PgType::INT4 => self
-                .row
-                .try_get::<_, i32>(self.col.name())
-                .map_err(PgDeError::PgError)? as u32,
+        let value = match self.pg_type {
+            PgType::INT2 => <i16 as PgFromSql>::from_sql(&self.pg_type, self.raw_data)
+                .map_err(PgDeError::cast_error)? as u32,
+            PgType::INT4 => <i32 as PgFromSql>::from_sql(&self.pg_type, self.raw_data)
+                .map_err(PgDeError::cast_error)? as u32,
 
             unsupported => Err(PgDeError::UnsupportedType(unsupported.to_owned()))?,
         };
@@ -238,19 +219,13 @@ impl<'a, 'de> Deserializer<'de> for DeCol<'a> {
             std::any::type_name::<V::Value>()
         );
 
-        let value = match self.col.type_() {
-            &PgType::INT2 => self
-                .row
-                .try_get::<_, i16>(self.col.name())
-                .map_err(PgDeError::PgError)? as u64,
-            &PgType::INT4 => self
-                .row
-                .try_get::<_, i32>(self.col.name())
-                .map_err(PgDeError::PgError)? as u64,
-            &PgType::INT8 => self
-                .row
-                .try_get::<_, i64>(self.col.name())
-                .map_err(PgDeError::PgError)? as u64,
+        let value = match self.pg_type {
+            PgType::INT2 => <i16 as PgFromSql>::from_sql(&self.pg_type, self.raw_data)
+                .map_err(PgDeError::cast_error)? as u64,
+            PgType::INT4 => <i32 as PgFromSql>::from_sql(&self.pg_type, self.raw_data)
+                .map_err(PgDeError::cast_error)? as u64,
+            PgType::INT8 => <i64 as PgFromSql>::from_sql(&self.pg_type, self.raw_data)
+                .map_err(PgDeError::cast_error)? as u64,
 
             unsupported => Err(PgDeError::UnsupportedType(unsupported.to_owned()))?,
         };
@@ -267,11 +242,9 @@ impl<'a, 'de> Deserializer<'de> for DeCol<'a> {
             std::any::type_name::<V::Value>()
         );
 
-        let value = match self.col.type_() {
-            &PgType::FLOAT4 => self
-                .row
-                .try_get::<_, f32>(self.col.name())
-                .map_err(PgDeError::PgError)?,
+        let value = match self.pg_type {
+            PgType::FLOAT4 => <f32 as PgFromSql>::from_sql(&self.pg_type, self.raw_data)
+                .map_err(PgDeError::cast_error)?,
 
             unsupported => Err(PgDeError::UnsupportedType(unsupported.to_owned()))?,
         };
@@ -288,15 +261,11 @@ impl<'a, 'de> Deserializer<'de> for DeCol<'a> {
             std::any::type_name::<V::Value>()
         );
 
-        let value = match self.col.type_() {
-            &PgType::FLOAT4 => self
-                .row
-                .try_get::<_, f32>(self.col.name())
-                .map_err(PgDeError::PgError)? as f64,
-            &PgType::FLOAT8 => self
-                .row
-                .try_get::<_, f64>(self.col.name())
-                .map_err(PgDeError::PgError)?,
+        let value = match self.pg_type {
+            PgType::FLOAT4 => <f32 as PgFromSql>::from_sql(&self.pg_type, self.raw_data)
+                .map_err(PgDeError::cast_error)? as f64,
+            PgType::FLOAT8 => <f64 as PgFromSql>::from_sql(&self.pg_type, self.raw_data)
+                .map_err(PgDeError::cast_error)?,
 
             unsupported => Err(PgDeError::UnsupportedType(unsupported.to_owned()))?,
         };
@@ -313,12 +282,14 @@ impl<'a, 'de> Deserializer<'de> for DeCol<'a> {
             std::any::type_name::<V::Value>()
         );
 
-        let () = util::ensure_pg_type(&self.col, &[PgType::VARCHAR, PgType::BPCHAR, PgType::TEXT])?;
+        let () = util::ensure_pg_type(
+            &self.pg_type,
+            &[PgType::VARCHAR, PgType::BPCHAR, PgType::TEXT],
+        )?;
 
         visitor.visit_string(
-            self.row
-                .try_get(self.col.name())
-                .map_err(PgDeError::PgError)?,
+            <String as PgFromSql>::from_sql(&self.pg_type, self.raw_data)
+                .map_err(PgDeError::cast_error)?,
         )
     }
 
@@ -330,16 +301,13 @@ impl<'a, 'de> Deserializer<'de> for DeCol<'a> {
             "deserialize_option(self, ...) [V::Value = {}]",
             std::any::type_name::<V::Value>()
         );
-        let is_null = self
-            .row
-            .try_get::<_, Option<UnitPgType>>(self.col.name())
-            .map_err(PgDeError::PgError)?
-            .is_none();
+        let pg_any_opt = <Option<Self> as PgFromSql>::from_sql(&self.pg_type, self.raw_data)
+            .map_err(PgDeError::cast_error)?;
 
-        if is_null {
-            visitor.visit_none()
+        if let Some(pg_any) = pg_any_opt {
+            visitor.visit_some(pg_any)
         } else {
-            visitor.visit_some(self)
+            visitor.visit_none()
         }
     }
 
@@ -363,23 +331,23 @@ impl<'a, 'de> Deserializer<'de> for DeCol<'a> {
     where
         V: Visitor<'de>,
     {
-        match self.col.type_() {
-            &PgType::TEXT_ARRAY => unimplemented!(),
-            &PgType::VARCHAR_ARRAY => unimplemented!(),
-            &PgType::BPCHAR => unimplemented!(),
+        match self.pg_type {
+            PgType::TEXT_ARRAY => unimplemented!(),
+            PgType::VARCHAR_ARRAY => unimplemented!(),
+            PgType::BPCHAR => unimplemented!(),
 
-            &PgType::INT2_ARRAY => unimplemented!(),
+            PgType::INT2_ARRAY => unimplemented!(),
 
-            &PgType::INT4_ARRAY => unimplemented!(),
+            PgType::INT4_ARRAY => unimplemented!(),
 
-            &PgType::INT8_ARRAY => unimplemented!(),
+            PgType::INT8_ARRAY => unimplemented!(),
 
-            &PgType::FLOAT4_ARRAY => unimplemented!(),
+            PgType::FLOAT4_ARRAY => unimplemented!(),
 
-            &PgType::FLOAT8_ARRAY => unimplemented!(),
+            PgType::FLOAT8_ARRAY => unimplemented!(),
 
-            &PgType::JSON_ARRAY => unimplemented!(),
-            &PgType::JSONB_ARRAY => unimplemented!(),
+            PgType::JSON_ARRAY => unimplemented!(),
+            PgType::JSONB_ARRAY => unimplemented!(),
 
             unsupported => Err(PgDeError::UnsupportedType(unsupported.to_owned()))?,
         }

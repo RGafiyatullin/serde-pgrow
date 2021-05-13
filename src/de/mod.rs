@@ -15,10 +15,6 @@ mod de_row;
 mod de_row_deserializer;
 pub use de_row::DeRow;
 
-mod de_col;
-mod de_col_deserializer;
-pub use de_col::DeCol;
-
 mod de_field_name;
 pub use de_field_name::DeFieldName;
 
@@ -33,3 +29,11 @@ pub use de_row_tuple::DeRowTuple;
 mod de_seq;
 mod de_seq_sa;
 pub use de_seq::DeSeq;
+
+mod pg_any;
+mod pg_any_deserializer;
+pub use pg_any::PgAny;
+
+mod pg_any_opt;
+mod pg_any_opt_deserializer;
+pub use pg_any_opt::PgAnyOpt;

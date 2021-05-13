@@ -1,10 +1,10 @@
 use crate::de::PgDeError;
 use crate::pg::*;
 
-pub fn ensure_pg_type(col: &PgCol, types: &[PgType]) -> Result<(), PgDeError> {
-    if types.into_iter().any(|t| t == col.type_()) {
+pub fn ensure_pg_type(ty: &PgType, types: &[PgType]) -> Result<(), PgDeError> {
+    if types.into_iter().any(|t| t == ty) {
         Ok(())
     } else {
-        Err(PgDeError::UnsupportedType(col.type_().to_owned()))
+        Err(PgDeError::UnsupportedType(ty.to_owned()))
     }
 }
