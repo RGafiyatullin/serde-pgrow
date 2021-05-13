@@ -91,7 +91,7 @@ impl<'a, 'de> Deserializer<'de> for DeRow<'a> {
         visitor.visit_seq(DeRowTuple::new(&self, Some(name), len))
     }
 
-    fn deserialize_seq<V>(self, _visitor: V) -> Result<V::Value, Self::Error>
+    fn deserialize_seq<V>(self, visitor: V) -> Result<V::Value, Self::Error>
     where
         V: Visitor<'de>,
     {
@@ -99,7 +99,9 @@ impl<'a, 'de> Deserializer<'de> for DeRow<'a> {
             "deserialize_seq(self, ...) [V::Value = {}]",
             std::any::type_name::<V::Value>()
         );
-        Err(PgDeError::Unimplemented)
+
+        self.require_single_column::<V::Value, V>()?
+            .deserialize_seq(visitor)
     }
 
     fn deserialize_struct<V>(
@@ -131,7 +133,10 @@ impl<'a, 'de> Deserializer<'de> for DeRow<'a> {
             "deserialize_map(self, ...) [V::Value = {}]",
             std::any::type_name::<V::Value>()
         );
-        Err(PgDeError::Unimplemented)
+        Err(PgDeError::Unimplemented(
+            "de_row::deserialize_map",
+            std::any::type_name::<V::Value>(),
+        ))
     }
 
     fn deserialize_bool<V>(self, visitor: V) -> Result<V::Value, Self::Error>

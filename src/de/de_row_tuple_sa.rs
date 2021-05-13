@@ -54,7 +54,10 @@ fn tuple_field_prefix(idx: usize, leading: bool) -> Result<&'static str, PgDeErr
         (10, true) => "_10",
         (11, true) => "_11",
 
-        _ => Err(PgDeError::Unimplemented)?,
+        _ => Err(PgDeError::Unimplemented(
+            "de_row_tuple_sa::tuple_prefix",
+            "arity over 12",
+        ))?,
     };
     Ok(prefix)
 }

@@ -16,8 +16,8 @@ pub enum PgDeError {
     #[error("PgDeError::UnsupportedType: {:?}", _0)]
     UnsupportedType(PgType),
 
-    #[error("PgDeError::Unimplemented")]
-    Unimplemented,
+    #[error("PgDeError::Unimplemented: {} [{}]", _0, _1)]
+    Unimplemented(&'static str, &'static str),
 }
 
 impl From<PgError> for PgDeError {

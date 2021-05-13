@@ -12,7 +12,10 @@ impl<'a, 'de> Deserializer<'de> for DeCol<'a> {
             std::any::type_name::<V>(),
             std::any::type_name::<V::Value>()
         );
-        Err(PgDeError::Unimplemented)
+        Err(PgDeError::Unimplemented(
+            "de_col::deserialize_any",
+            std::any::type_name::<V::Value>(),
+        ))
     }
 
     ::serde::forward_to_deserialize_any! {
@@ -29,7 +32,7 @@ impl<'a, 'de> Deserializer<'de> for DeCol<'a> {
         // unit
         // unit_struct
         // newtype_struct
-        seq
+        // seq
         tuple
         tuple_struct
         map
@@ -84,7 +87,10 @@ impl<'a, 'de> Deserializer<'de> for DeCol<'a> {
             std::any::type_name::<V::Value>()
         );
 
-        Err(PgDeError::Unimplemented)
+        Err(PgDeError::Unimplemented(
+            "de_col::deserialize_i8",
+            std::any::type_name::<V::Value>(),
+        ))
     }
 
     fn deserialize_i16<V>(self, visitor: V) -> Result<V::Value, Self::Error>
@@ -171,7 +177,10 @@ impl<'a, 'de> Deserializer<'de> for DeCol<'a> {
             std::any::type_name::<V::Value>()
         );
 
-        Err(PgDeError::Unimplemented)
+        Err(PgDeError::Unimplemented(
+            "de_col::deserialize_u8",
+            std::any::type_name::<V::Value>(),
+        ))
     }
 
     fn deserialize_u16<V>(self, visitor: V) -> Result<V::Value, Self::Error>
@@ -304,10 +313,7 @@ impl<'a, 'de> Deserializer<'de> for DeCol<'a> {
             std::any::type_name::<V::Value>()
         );
 
-        let () = util::ensure_pg_type(
-            &self.col,
-            &[PgType::VARCHAR, PgType::CHAR, PgType::BPCHAR, PgType::TEXT],
-        )?;
+        let () = util::ensure_pg_type(&self.col, &[PgType::VARCHAR, PgType::BPCHAR, PgType::TEXT])?;
 
         visitor.visit_string(
             self.row
@@ -351,5 +357,31 @@ impl<'a, 'de> Deserializer<'de> for DeCol<'a> {
             std::any::type_name::<V::Value>()
         );
         visitor.visit_newtype_struct(self)
+    }
+
+    fn deserialize_seq<V>(self, _visitor: V) -> Result<V::Value, Self::Error>
+    where
+        V: Visitor<'de>,
+    {
+        match self.col.type_() {
+            &PgType::TEXT_ARRAY => unimplemented!(),
+            &PgType::VARCHAR_ARRAY => unimplemented!(),
+            &PgType::BPCHAR => unimplemented!(),
+
+            &PgType::INT2_ARRAY => unimplemented!(),
+
+            &PgType::INT4_ARRAY => unimplemented!(),
+
+            &PgType::INT8_ARRAY => unimplemented!(),
+
+            &PgType::FLOAT4_ARRAY => unimplemented!(),
+
+            &PgType::FLOAT8_ARRAY => unimplemented!(),
+
+            &PgType::JSON_ARRAY => unimplemented!(),
+            &PgType::JSONB_ARRAY => unimplemented!(),
+
+            unsupported => Err(PgDeError::UnsupportedType(unsupported.to_owned()))?,
+        }
     }
 }
