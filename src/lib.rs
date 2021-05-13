@@ -1,9 +1,5 @@
-pub mod v0_2;
-
-mod pg;
-
 mod de;
-
+mod pg;
 mod pg_row_ext;
 
 pub type AnyError = ::eyre::Report;

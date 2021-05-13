@@ -3,6 +3,7 @@ use std::collections::HashMap;
 mod common;
 
 #[tokio::test]
+// #[ignore]
 async fn t_text_columns_into_hashmap() {
     // common::init_logger();
     let out = common::pg_query_and_de::<HashMap<String, String>>(
@@ -22,6 +23,7 @@ async fn t_text_columns_into_hashmap() {
 }
 
 #[tokio::test]
+// #[ignore]
 async fn t_int4_columns_into_hashmap() {
     // common::init_logger();
     let out = common::pg_query_and_de::<HashMap<String, i32>>("SELECT 1 one, 2 two, 3 three", &[])
@@ -38,10 +40,11 @@ async fn t_int4_columns_into_hashmap() {
 }
 
 #[tokio::test]
+// #[ignore]
 async fn t_int4_columns_into_hashmap_tuple_idx_prefix() {
     // common::init_logger();
-    let out = common::pg_query_and_de::<(HashMap<String, i32>, ())>(
-        "SELECT 1 _0_one, 2 _0_two, 3 _0_three",
+    let out = common::pg_query_and_de::<(HashMap<String, i32>, i32)>(
+        "SELECT 1 _0_one, 2 _0_two, 3 _0_three, 4 _1",
         &[],
     )
     .await
@@ -53,5 +56,5 @@ async fn t_int4_columns_into_hashmap_tuple_idx_prefix() {
     ]
     .into_iter()
     .collect();
-    assert_eq!(out, vec![(expected_hashmap, ())]);
+    assert_eq!(out, vec![(expected_hashmap, 4)]);
 }

@@ -8,8 +8,8 @@ use crate::pg::*;
 
 mod util;
 
-mod de_error;
-pub use de_error::PgDeError;
+mod pg_de_error;
+pub use pg_de_error::PgDeError;
 
 mod de_row;
 mod de_row_deserializer;

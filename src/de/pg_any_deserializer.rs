@@ -3,7 +3,7 @@ use super::*;
 impl<'a, 'de> Deserializer<'de> for PgAny<'a> {
     type Error = crate::de::PgDeError;
 
-    fn deserialize_any<V>(self, _visitor: V) -> Result<V::Value, Self::Error>
+    fn deserialize_any<V>(self, visitor: V) -> Result<V::Value, Self::Error>
     where
         V: Visitor<'de>,
     {
@@ -12,10 +12,35 @@ impl<'a, 'de> Deserializer<'de> for PgAny<'a> {
             std::any::type_name::<V>(),
             std::any::type_name::<V::Value>()
         );
-        Err(PgDeError::Unimplemented(
-            "pg_any::deserialize_any",
-            std::any::type_name::<V::Value>(),
-        ))
+
+        match self.pg_type {
+            PgType::BOOL => self.deserialize_bool(visitor),
+            PgType::BOOL_ARRAY => self.deserialize_seq(visitor),
+
+            PgType::INT2 => self.deserialize_i16(visitor),
+            PgType::INT2_ARRAY => self.deserialize_seq(visitor),
+
+            PgType::INT4 => self.deserialize_i32(visitor),
+            PgType::INT4_ARRAY => self.deserialize_seq(visitor),
+
+            PgType::INT8 => self.deserialize_i64(visitor),
+            PgType::INT8_ARRAY => self.deserialize_seq(visitor),
+
+            PgType::TEXT => self.deserialize_string(visitor),
+            PgType::TEXT_ARRAY => self.deserialize_seq(visitor),
+            PgType::VARCHAR => self.deserialize_string(visitor),
+            PgType::VARCHAR_ARRAY => self.deserialize_seq(visitor),
+            PgType::BPCHAR => self.deserialize_string(visitor),
+            PgType::BPCHAR_ARRAY => self.deserialize_seq(visitor),
+
+            PgType::FLOAT4 => self.deserialize_f32(visitor),
+            PgType::FLOAT4_ARRAY => self.deserialize_seq(visitor),
+
+            PgType::FLOAT8 => self.deserialize_f64(visitor),
+            PgType::FLOAT8_ARRAY => self.deserialize_seq(visitor),
+
+            unsupported => Err(PgDeError::UnsupportedType(unsupported)),
+        }
     }
 
     ::serde::forward_to_deserialize_any! {

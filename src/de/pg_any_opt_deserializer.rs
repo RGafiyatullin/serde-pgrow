@@ -3,7 +3,7 @@ use super::*;
 impl<'a, 'de> Deserializer<'de> for PgAnyOpt<'a> {
     type Error = crate::de::PgDeError;
 
-    fn deserialize_any<V>(self, _visitor: V) -> Result<V::Value, Self::Error>
+    fn deserialize_any<V>(self, visitor: V) -> Result<V::Value, Self::Error>
     where
         V: Visitor<'de>,
     {
@@ -12,10 +12,11 @@ impl<'a, 'de> Deserializer<'de> for PgAnyOpt<'a> {
             std::any::type_name::<V>(),
             std::any::type_name::<V::Value>()
         );
-        Err(PgDeError::Unimplemented(
-            "pg_any_opt::deserialize_any",
-            std::any::type_name::<V::Value>(),
-        ))
+        if let Some(pg_any) = self.inner {
+            pg_any.deserialize_any(visitor)
+        } else {
+            visitor.visit_none()
+        }
     }
 
     ::serde::forward_to_deserialize_any! {
