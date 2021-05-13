@@ -26,6 +26,10 @@ mod de_row_tuple;
 mod de_row_tuple_sa;
 pub use de_row_tuple::DeRowTuple;
 
+mod de_row_map;
+mod de_row_map_ma;
+pub use de_row_map::DeRowMap;
+
 mod de_seq;
 mod de_seq_sa;
 pub use de_seq::DeSeq;

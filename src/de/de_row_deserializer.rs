@@ -125,7 +125,7 @@ impl<'a, 'de> Deserializer<'de> for DeRow<'a> {
         visitor.visit_map(ma)
     }
 
-    fn deserialize_map<V>(self, _visitor: V) -> Result<V::Value, Self::Error>
+    fn deserialize_map<V>(self, visitor: V) -> Result<V::Value, Self::Error>
     where
         V: Visitor<'de>,
     {
@@ -133,10 +133,10 @@ impl<'a, 'de> Deserializer<'de> for DeRow<'a> {
             "deserialize_map(self, ...) [V::Value = {}]",
             std::any::type_name::<V::Value>()
         );
-        Err(PgDeError::Unimplemented(
-            "de_row::deserialize_map",
-            std::any::type_name::<V::Value>(),
-        ))
+
+        let ma = DeRowMap::new(&self);
+
+        visitor.visit_map(ma)
     }
 
     fn deserialize_bool<V>(self, visitor: V) -> Result<V::Value, Self::Error>

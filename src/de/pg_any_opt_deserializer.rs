@@ -13,7 +13,7 @@ impl<'a, 'de> Deserializer<'de> for PgAnyOpt<'a> {
             std::any::type_name::<V::Value>()
         );
         Err(PgDeError::Unimplemented(
-            "de_col::deserialize_any",
+            "pg_any_opt::deserialize_any",
             std::any::type_name::<V::Value>(),
         ))
     }

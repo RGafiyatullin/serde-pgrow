@@ -13,7 +13,7 @@ impl<'a, 'de> Deserializer<'de> for PgAny<'a> {
             std::any::type_name::<V::Value>()
         );
         Err(PgDeError::Unimplemented(
-            "de_col::deserialize_any",
+            "pg_any::deserialize_any",
             std::any::type_name::<V::Value>(),
         ))
     }
@@ -87,7 +87,7 @@ impl<'a, 'de> Deserializer<'de> for PgAny<'a> {
         );
 
         Err(PgDeError::Unimplemented(
-            "de_col::deserialize_i8",
+            "pg_any::deserialize_i8",
             std::any::type_name::<V::Value>(),
         ))
     }
@@ -165,7 +165,7 @@ impl<'a, 'de> Deserializer<'de> for PgAny<'a> {
         );
 
         Err(PgDeError::Unimplemented(
-            "de_col::deserialize_u8",
+            "pg_any::deserialize_u8",
             std::any::type_name::<V::Value>(),
         ))
     }
