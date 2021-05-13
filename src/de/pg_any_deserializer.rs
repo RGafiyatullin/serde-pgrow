@@ -61,7 +61,7 @@ impl<'a, 'de> Deserializer<'de> for PgAny<'a> {
         tuple
         tuple_struct
         map
-        struct
+        // struct
         enum
         identifier
         ignored_any
@@ -360,7 +360,25 @@ impl<'a, 'de> Deserializer<'de> for PgAny<'a> {
             .map_err(PgDeError::cast_error)?
             .into_iter()
             .map(PgAnyOpt::from);
-        let sa = DeSeq { elements };
+        let sa = DeSeqOfPgAnyOpt { elements };
         visitor.visit_seq(sa)
+    }
+
+    fn deserialize_struct<V>(
+        self,
+        name: &'static str,
+        fields: &'static [&'static str],
+        visitor: V,
+    ) -> Result<V::Value, Self::Error>
+    where
+        V: Visitor<'de>,
+    {
+        let () = util::ensure_pg_type(&self.pg_type, &[PgType::JSON, PgType::JSONB])?;
+
+        let js_value = <JsValue as PgFromSql>::from_sql(&self.pg_type, self.raw_data)
+            .map_err(PgDeError::cast_error)?;
+        let de = DeJsValue::new(&js_value);
+
+        de.deserialize_struct(name, fields, visitor)
     }
 }

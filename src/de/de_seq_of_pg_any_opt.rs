@@ -1,4 +1,4 @@
 #[derive(Debug)]
-pub struct DeSeq<I> {
+pub struct DeSeqOfPgAnyOpt<I> {
     pub(super) elements: I,
 }

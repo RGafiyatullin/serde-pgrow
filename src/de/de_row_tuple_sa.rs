@@ -20,7 +20,7 @@ impl<'a, 'de> SeqAccess<'de> for DeRowTuple<'a> {
                 let mut prefix = self.de_row.prefix.to_owned();
                 let appendee = tuple_field_prefix(key, prefix.is_empty())?;
                 prefix.push(appendee);
-                seed.deserialize(DeRow::new_with_prefix(self.de_row.row, prefix))
+                self.de_row.proceed_with_prefix(prefix, seed)
             })
             .transpose()
     }

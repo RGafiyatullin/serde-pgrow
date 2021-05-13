@@ -15,9 +15,26 @@ impl PgRowExt for PgRow {
     where
         T: Deserialize<'de>,
     {
-        log::trace!("DeRow for {}", std::any::type_name::<T>());
-        let de = DeRow::new(self);
-        ::serde::Deserialize::deserialize(de)
+        log::trace!("PgRowExt::cast<'de, {}>", std::any::type_name::<T>());
+
+        if self.columns().len() == 1
+            && self
+                .columns()
+                .first()
+                .into_iter()
+                .all(|c| c.type_() == &PgType::JSON || c.type_() == &PgType::JSONB)
+        {
+            use ::serde_json::Value as JsValue;
+
+            let js_value_opt = self
+                .try_get::<_, Option<JsValue>>(0)
+                .map_err(PgDeError::PgError)?;
+            ::serde::Deserialize::deserialize(js_value_opt.unwrap_or(JsValue::Null))
+                .map_err(PgDeError::SerdeJsonError)
+        } else {
+            let de = DeRow::new(self);
+            ::serde::Deserialize::deserialize(de)
+        }
     }
 }
 
