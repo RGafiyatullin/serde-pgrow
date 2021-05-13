@@ -34,8 +34,6 @@ impl<'a, 'de> MapAccess<'de> for DeRowStruct<'a> {
         let mut prefix = self.de_row.prefix.to_owned();
         let () = prefix.push(field_name);
 
-        let de_row = DeRow::new_with_prefix(self.de_row.row, prefix);
-
-        seed.deserialize(de_row)
+        self.de_row.proceed_with_prefix(prefix, seed)
     }
 }

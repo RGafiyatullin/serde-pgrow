@@ -9,6 +9,13 @@ pub struct DeRow<'a> {
 
 impl<'a> DeRow<'a> {
     pub(crate) fn new(row: &'a PgRow) -> Self {
+        log::trace!(
+            "DeRow::new(...) [cols: {:?}]",
+            row.columns()
+                .into_iter()
+                .map(PgCol::name)
+                .collect::<Vec<_>>()
+        );
         let cols = row.columns().iter().collect();
 
         Self {
@@ -17,18 +24,37 @@ impl<'a> DeRow<'a> {
             prefix: Default::default(),
         }
     }
-    pub(crate) fn new_with_prefix(row: &'a PgRow, prefix: Vec<&'static str>) -> Self {
+
+    pub(crate) fn proceed_with_prefix<'de, T>(
+        &'a self,
+        prefix: Vec<&'static str>,
+        seed: T,
+    ) -> Result<T::Value, PgDeError>
+    where
+        T: DeserializeSeed<'de>,
+    {
+        let row = self.row;
+        log::trace!(
+            "DeRow::proceed_with_prefix<{}>(..., prefix: {:?}) [cols: {:?}, T::Value: {}]",
+            std::any::type_name::<T>(),
+            prefix,
+            row.columns()
+                .into_iter()
+                .map(PgCol::name)
+                .collect::<Vec<_>>(),
+            std::any::type_name::<T::Value>(),
+        );
         let field_name = prefix.join("_");
         if let Some(col) = row
             .columns()
             .iter()
             .find(|c| c.name() == field_name.as_str())
         {
-            Self {
-                row: row,
-                cols: vec![col],
-                prefix,
-            }
+            let de = row
+                .try_get::<_, Option<PgAny>>(col.name())
+                .map(PgAnyOpt::from)
+                .unwrap();
+            seed.deserialize(de)
         } else {
             let mut field_prefix = field_name;
             field_prefix.push('_');
@@ -39,7 +65,8 @@ impl<'a> DeRow<'a> {
                 .filter(|c| c.name().starts_with(field_prefix.as_str()))
                 .collect();
 
-            Self { row, cols, prefix }
+            let de = Self { row, cols, prefix };
+            seed.deserialize(de)
         }
     }
 

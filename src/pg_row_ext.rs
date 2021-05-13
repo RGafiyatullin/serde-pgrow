@@ -15,7 +15,8 @@ impl PgRowExt for PgRow {
     where
         T: Deserialize<'de>,
     {
-        log::trace!("DeRow for {}", std::any::type_name::<T>());
+        log::trace!("PgRowExt::cast<'de, {}>", std::any::type_name::<T>());
+
         let de = DeRow::new(self);
         ::serde::Deserialize::deserialize(de)
     }

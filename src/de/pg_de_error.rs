@@ -1,6 +1,7 @@
 use std::error::Error as StdError;
 
 use ::serde::de::Error as DeError;
+use ::serde_json::Error as SerdeJsonError;
 use ::tokio_postgres::Error as PgError;
 
 use crate::pg::PgType;
@@ -13,6 +14,9 @@ pub enum PgDeError {
 
     #[error("PgDeError::PgError")]
     PgError(#[source] PgError),
+
+    #[error("PgDeError::SerdeJsonError")]
+    SerdeJsonError(#[source] SerdeJsonError),
 
     // UnexpectedNull(String),
     #[error("PgDeError::UnsupportedType: {:?}", _0)]

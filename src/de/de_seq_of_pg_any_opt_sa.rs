@@ -1,6 +1,6 @@
 use super::*;
 
-impl<'a, 'de, I> SeqAccess<'de> for DeSeq<I>
+impl<'a, 'de, I> SeqAccess<'de> for DeSeqOfPgAnyOpt<I>
 where
     I: Iterator<Item = PgAnyOpt<'a>>,
 {
