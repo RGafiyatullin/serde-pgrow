@@ -327,29 +327,15 @@ impl<'a, 'de> Deserializer<'de> for PgAny<'a> {
         visitor.visit_newtype_struct(self)
     }
 
-    fn deserialize_seq<V>(self, _visitor: V) -> Result<V::Value, Self::Error>
+    fn deserialize_seq<V>(self, visitor: V) -> Result<V::Value, Self::Error>
     where
         V: Visitor<'de>,
     {
-        match self.pg_type {
-            PgType::TEXT_ARRAY => unimplemented!(),
-            PgType::VARCHAR_ARRAY => unimplemented!(),
-            PgType::BPCHAR => unimplemented!(),
-
-            PgType::INT2_ARRAY => unimplemented!(),
-
-            PgType::INT4_ARRAY => unimplemented!(),
-
-            PgType::INT8_ARRAY => unimplemented!(),
-
-            PgType::FLOAT4_ARRAY => unimplemented!(),
-
-            PgType::FLOAT8_ARRAY => unimplemented!(),
-
-            PgType::JSON_ARRAY => unimplemented!(),
-            PgType::JSONB_ARRAY => unimplemented!(),
-
-            unsupported => Err(PgDeError::UnsupportedType(unsupported.to_owned()))?,
-        }
+        let elements = <Vec<Option<PgAny>> as PgFromSql>::from_sql(&self.pg_type, self.raw_data)
+            .map_err(PgDeError::cast_error)?
+            .into_iter()
+            .map(PgAnyOpt::from);
+        let sa = DeSeq { elements };
+        visitor.visit_seq(sa)
     }
 }
