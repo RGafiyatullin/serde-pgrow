@@ -80,10 +80,11 @@ impl<'a> DeRow<'a> {
     {
         #[cfg(feature = "debug-logs")]
         log::trace!(
-            "require_single_column::<{}, {}>(self) [V::Value = {}]",
+            "require_single_column::<{}, {}>(self) [V::Value = {}, prefix = {:?}]",
             std::any::type_name::<T>(),
             std::any::type_name::<V>(),
-            std::any::type_name::<V::Value>()
+            std::any::type_name::<V::Value>(),
+            self.prefix
         );
 
         if self.cols.len() == 1 {
@@ -96,10 +97,11 @@ impl<'a> DeRow<'a> {
         } else {
             Err(PgDeError::Custom(
                 format!(
-                    "Failed to require_single_column::<{}, {}>: cols.len = {}",
+                    "Failed to require_single_column::<{}, {}>: cols.len = {}, prefix = {:?}",
                     std::any::type_name::<T>(),
                     std::any::type_name::<V::Value>(),
-                    self.cols.len()
+                    self.cols.len(),
+                    self.prefix,
                 ),
                 None,
             ))
