@@ -30,5 +30,9 @@ jobs:
     - uses: actions/checkout@v2
     - name: Build
       run: cargo build --verbose
+    - name: Build (features = ["debug-logs"])
+      run: cargo build --verbose --features debug-logs
     - name: Run tests
       run: cargo test --verbose
+    - name: Run tests (features = ["debug-logs"])
+      run: cargo test --verbose --features debug-logs
