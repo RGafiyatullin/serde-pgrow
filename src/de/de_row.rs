@@ -9,13 +9,14 @@ pub struct DeRow<'a> {
 
 impl<'a> DeRow<'a> {
     pub(crate) fn new(row: &'a PgRow) -> Self {
-        // log::trace!(
-        //     "DeRow::new(...) [cols: {:?}]",
-        //     row.columns()
-        //         .into_iter()
-        //         .map(PgCol::name)
-        //         .collect::<Vec<_>>()
-        // );
+        #[cfg(feature = "debug-logs")]
+        log::trace!(
+            "DeRow::new(...) [cols: {:?}]",
+            row.columns()
+                .into_iter()
+                .map(PgCol::name)
+                .collect::<Vec<_>>()
+        );
         let cols = row.columns().iter().collect();
 
         Self {
@@ -34,16 +35,19 @@ impl<'a> DeRow<'a> {
         T: DeserializeSeed<'de>,
     {
         let row = self.row;
-        // log::trace!(
-        //     "DeRow::proceed_with_prefix<{}>(..., prefix: {:?}) [cols: {:?}, T::Value: {}]",
-        //     std::any::type_name::<T>(),
-        //     prefix,
-        //     row.columns()
-        //         .into_iter()
-        //         .map(PgCol::name)
-        //         .collect::<Vec<_>>(),
-        //     std::any::type_name::<T::Value>(),
-        // );
+
+        #[cfg(feature = "debug-logs")]
+        log::trace!(
+            "DeRow::proceed_with_prefix<{}>(..., prefix: {:?}) [cols: {:?}, T::Value: {}]",
+            std::any::type_name::<T>(),
+            prefix,
+            row.columns()
+                .into_iter()
+                .map(PgCol::name)
+                .collect::<Vec<_>>(),
+            std::any::type_name::<T::Value>(),
+        );
+
         let field_name = prefix.join("_");
         if let Some(col) = row
             .columns()
@@ -74,12 +78,13 @@ impl<'a> DeRow<'a> {
     where
         V: Visitor<'de>,
     {
-        // log::trace!(
-        //     "require_single_column::<{}, {}>(self) [V::Value = {}]",
-        //     std::any::type_name::<T>(),
-        //     std::any::type_name::<V>(),
-        //     std::any::type_name::<V::Value>()
-        // );
+        #[cfg(feature = "debug-logs")]
+        log::trace!(
+            "require_single_column::<{}, {}>(self) [V::Value = {}]",
+            std::any::type_name::<T>(),
+            std::any::type_name::<V>(),
+            std::any::type_name::<V::Value>()
+        );
 
         if self.cols.len() == 1 {
             let col = self.cols[0];

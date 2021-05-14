@@ -7,11 +7,12 @@ impl<'a, 'de> Deserializer<'de> for PgAny<'a> {
     where
         V: Visitor<'de>,
     {
-        // log::trace!(
-        //     "deserialize_any::<{}>(...) [V::Value = {}]",
-        //     std::any::type_name::<V>(),
-        //     std::any::type_name::<V::Value>()
-        // );
+        #[cfg(feature = "debug-logs")]
+        log::trace!(
+            "deserialize_any::<{}>(...) [V::Value = {}]",
+            std::any::type_name::<V>(),
+            std::any::type_name::<V::Value>()
+        );
 
         match self.pg_type {
             PgType::BOOL => self.deserialize_bool(visitor),
@@ -105,10 +106,11 @@ impl<'a, 'de> Deserializer<'de> for PgAny<'a> {
     where
         V: Visitor<'de>,
     {
-        // log::trace!(
-        //     "deserialize_bool(self, ...) [V::Value = {}]",
-        //     std::any::type_name::<V::Value>()
-        // );
+        #[cfg(feature = "debug-logs")]
+        log::trace!(
+            "deserialize_bool(self, ...) [V::Value = {}]",
+            std::any::type_name::<V::Value>()
+        );
 
         let () = util::ensure_pg_type(&self.pg_type, &[PgType::BOOL])?;
 
@@ -122,10 +124,11 @@ impl<'a, 'de> Deserializer<'de> for PgAny<'a> {
     where
         V: Visitor<'de>,
     {
-        // log::trace!(
-        //     "deserialize_i8(self, ...) [V::Value = {}]",
-        //     std::any::type_name::<V::Value>()
-        // );
+        #[cfg(feature = "debug-logs")]
+        log::trace!(
+            "deserialize_i8(self, ...) [V::Value = {}]",
+            std::any::type_name::<V::Value>()
+        );
 
         Err(PgDeError::Unimplemented(
             "pg_any::deserialize_i8",
@@ -137,10 +140,11 @@ impl<'a, 'de> Deserializer<'de> for PgAny<'a> {
     where
         V: Visitor<'de>,
     {
-        // log::trace!(
-        //     "deserialize_i16(self, ...) [V::Value = {}]",
-        //     std::any::type_name::<V::Value>()
-        // );
+        #[cfg(feature = "debug-logs")]
+        log::trace!(
+            "deserialize_i16(self, ...) [V::Value = {}]",
+            std::any::type_name::<V::Value>()
+        );
 
         let value = match self.pg_type {
             PgType::INT2 => <i16 as PgFromSql>::from_sql(&self.pg_type, self.raw_data)
@@ -156,10 +160,11 @@ impl<'a, 'de> Deserializer<'de> for PgAny<'a> {
     where
         V: Visitor<'de>,
     {
-        // log::trace!(
-        //     "deserialize_i32(self, ...) [V::Value = {}]",
-        //     std::any::type_name::<V::Value>()
-        // );
+        #[cfg(feature = "debug-logs")]
+        log::trace!(
+            "deserialize_i32(self, ...) [V::Value = {}]",
+            std::any::type_name::<V::Value>()
+        );
 
         let value = match self.pg_type {
             PgType::INT2 => <i16 as PgFromSql>::from_sql(&self.pg_type, self.raw_data)
@@ -177,10 +182,11 @@ impl<'a, 'de> Deserializer<'de> for PgAny<'a> {
     where
         V: Visitor<'de>,
     {
-        // log::trace!(
-        //     "deserialize_i64(self, ...) [V::Value = {}]",
-        //     std::any::type_name::<V::Value>()
-        // );
+        #[cfg(feature = "debug-logs")]
+        log::trace!(
+            "deserialize_i64(self, ...) [V::Value = {}]",
+            std::any::type_name::<V::Value>()
+        );
 
         let value = match self.pg_type {
             PgType::INT2 => <i16 as PgFromSql>::from_sql(&self.pg_type, self.raw_data)
@@ -200,10 +206,11 @@ impl<'a, 'de> Deserializer<'de> for PgAny<'a> {
     where
         V: Visitor<'de>,
     {
-        // log::trace!(
-        //     "deserialize_u8(self, ...) [V::Value = {}]",
-        //     std::any::type_name::<V::Value>()
-        // );
+        #[cfg(feature = "debug-logs")]
+        log::trace!(
+            "deserialize_u8(self, ...) [V::Value = {}]",
+            std::any::type_name::<V::Value>()
+        );
 
         Err(PgDeError::Unimplemented(
             "pg_any::deserialize_u8",
@@ -215,10 +222,11 @@ impl<'a, 'de> Deserializer<'de> for PgAny<'a> {
     where
         V: Visitor<'de>,
     {
-        // log::trace!(
-        //     "deserialize_u16(self, ...) [V::Value = {}]",
-        //     std::any::type_name::<V::Value>()
-        // );
+        #[cfg(feature = "debug-logs")]
+        log::trace!(
+            "deserialize_u16(self, ...) [V::Value = {}]",
+            std::any::type_name::<V::Value>()
+        );
 
         let value = match self.pg_type {
             PgType::INT2 => <i16 as PgFromSql>::from_sql(&self.pg_type, self.raw_data)
@@ -234,10 +242,11 @@ impl<'a, 'de> Deserializer<'de> for PgAny<'a> {
     where
         V: Visitor<'de>,
     {
-        // log::trace!(
-        //     "deserialize_u32(self, ...) [V::Value = {}]",
-        //     std::any::type_name::<V::Value>()
-        // );
+        #[cfg(feature = "debug-logs")]
+        log::trace!(
+            "deserialize_u32(self, ...) [V::Value = {}]",
+            std::any::type_name::<V::Value>()
+        );
 
         let value = match self.pg_type {
             PgType::INT2 => <i16 as PgFromSql>::from_sql(&self.pg_type, self.raw_data)
@@ -255,10 +264,11 @@ impl<'a, 'de> Deserializer<'de> for PgAny<'a> {
     where
         V: Visitor<'de>,
     {
-        // log::trace!(
-        //     "deserialize_u64(self, ...) [V::Value = {}]",
-        //     std::any::type_name::<V::Value>()
-        // );
+        #[cfg(feature = "debug-logs")]
+        log::trace!(
+            "deserialize_u64(self, ...) [V::Value = {}]",
+            std::any::type_name::<V::Value>()
+        );
 
         let value = match self.pg_type {
             PgType::INT2 => <i16 as PgFromSql>::from_sql(&self.pg_type, self.raw_data)
@@ -278,10 +288,11 @@ impl<'a, 'de> Deserializer<'de> for PgAny<'a> {
     where
         V: Visitor<'de>,
     {
-        // log::trace!(
-        //     "deserialize_f32(self, ...) [V::Value = {}]",
-        //     std::any::type_name::<V::Value>()
-        // );
+        #[cfg(feature = "debug-logs")]
+        log::trace!(
+            "deserialize_f32(self, ...) [V::Value = {}]",
+            std::any::type_name::<V::Value>()
+        );
 
         let value = match self.pg_type {
             PgType::FLOAT4 => <f32 as PgFromSql>::from_sql(&self.pg_type, self.raw_data)
@@ -297,10 +308,11 @@ impl<'a, 'de> Deserializer<'de> for PgAny<'a> {
     where
         V: Visitor<'de>,
     {
-        // log::trace!(
-        //     "deserialize_f64(self, ...) [V::Value = {}]",
-        //     std::any::type_name::<V::Value>()
-        // );
+        #[cfg(feature = "debug-logs")]
+        log::trace!(
+            "deserialize_f64(self, ...) [V::Value = {}]",
+            std::any::type_name::<V::Value>()
+        );
 
         let value = match self.pg_type {
             PgType::FLOAT4 => <f32 as PgFromSql>::from_sql(&self.pg_type, self.raw_data)
@@ -318,10 +330,11 @@ impl<'a, 'de> Deserializer<'de> for PgAny<'a> {
     where
         V: Visitor<'de>,
     {
-        // log::trace!(
-        //     "deserialize_string(self, ...) [V::Value = {}]",
-        //     std::any::type_name::<V::Value>()
-        // );
+        #[cfg(feature = "debug-logs")]
+        log::trace!(
+            "deserialize_string(self, ...) [V::Value = {}]",
+            std::any::type_name::<V::Value>()
+        );
 
         let () = util::ensure_pg_type(
             &self.pg_type,
@@ -338,10 +351,12 @@ impl<'a, 'de> Deserializer<'de> for PgAny<'a> {
     where
         V: Visitor<'de>,
     {
-        // log::trace!(
-        //     "deserialize_option(self, ...) [V::Value = {}]",
-        //     std::any::type_name::<V::Value>()
-        // );
+        #[cfg(feature = "debug-logs")]
+        log::trace!(
+            "deserialize_option(self, ...) [V::Value = {}]",
+            std::any::type_name::<V::Value>()
+        );
+
         let pg_any_opt = <Option<Self> as PgFromSql>::from_sql(&self.pg_type, self.raw_data)
             .map_err(PgDeError::cast_error)?;
 
@@ -360,11 +375,13 @@ impl<'a, 'de> Deserializer<'de> for PgAny<'a> {
     where
         V: Visitor<'de>,
     {
-        // log::trace!(
-        //     "deserialize_newtype_struct(self, name: {:?}, ...) [V::Value = {}]",
-        //     name,
-        //     std::any::type_name::<V::Value>()
-        // );
+        #[cfg(feature = "debug-logs")]
+        log::trace!(
+            "deserialize_newtype_struct(self, name: {:?}, ...) [V::Value = {}]",
+            _name,
+            std::any::type_name::<V::Value>()
+        );
+
         visitor.visit_newtype_struct(self)
     }
 

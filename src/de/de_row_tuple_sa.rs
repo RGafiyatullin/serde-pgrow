@@ -9,11 +9,12 @@ impl<'a, 'de> SeqAccess<'de> for DeRowTuple<'a> {
     {
         let key_opt = self.keys.next();
 
-        // log::trace!(
-        //     "next_element_seed(&mut self, ...) [T::Value = {}] => {:?}",
-        //     std::any::type_name::<T::Value>(),
-        //     key_opt
-        // );
+        #[cfg(feature = "debug-logs")]
+        log::trace!(
+            "next_element_seed(&mut self, ...) [T::Value = {}] => {:?}",
+            std::any::type_name::<T::Value>(),
+            key_opt
+        );
 
         key_opt
             .map(|key| {

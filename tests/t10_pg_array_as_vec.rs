@@ -57,7 +57,7 @@ async fn t_pg_arr_of_varchar_as_vec_nullable_string() {
 #[tokio::test]
 // #[ignore]
 async fn t_pg_arr_of_jsonb_as_vec_of_jsvalue() {
-    common::init_logger();
+    // common::init_logger();
     let out = common::pg_query_and_de::<Vec<JsValue>>(
         "SELECT array_agg(R.a) FROM (SELECT '1' :: JSONB a UNION ALL SELECT '2' :: JSONB) R",
         &[],

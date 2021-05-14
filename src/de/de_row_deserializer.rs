@@ -65,11 +65,12 @@ impl<'a, 'de> Deserializer<'de> for DeRow<'a> {
     where
         V: Visitor<'de>,
     {
-        // log::trace!(
-        //     "deserialize_tuple(self, len: {:?}, ...) [V::Value = {}]",
-        //     len,
-        //     std::any::type_name::<V::Value>()
-        // );
+        #[cfg(feature = "debug-logs")]
+        log::trace!(
+            "deserialize_tuple(self, len: {:?}, ...) [V::Value = {}]",
+            len,
+            std::any::type_name::<V::Value>()
+        );
         visitor.visit_seq(DeRowTuple::new(&self, None, len))
     }
     fn deserialize_tuple_struct<V>(
@@ -81,12 +82,13 @@ impl<'a, 'de> Deserializer<'de> for DeRow<'a> {
     where
         V: Visitor<'de>,
     {
-        // log::trace!(
-        //     "deserialize_tuple_struct(self, name: {:?} len: {:?}, ...) [V::Value = {}]",
-        //     name,
-        //     len,
-        //     std::any::type_name::<V::Value>()
-        // );
+        #[cfg(feature = "debug-logs")]
+        log::trace!(
+            "deserialize_tuple_struct(self, name: {:?} len: {:?}, ...) [V::Value = {}]",
+            name,
+            len,
+            std::any::type_name::<V::Value>()
+        );
         visitor.visit_seq(DeRowTuple::new(&self, Some(name), len))
     }
 
@@ -94,10 +96,11 @@ impl<'a, 'de> Deserializer<'de> for DeRow<'a> {
     where
         V: Visitor<'de>,
     {
-        // log::trace!(
-        //     "deserialize_seq(self, ...) [V::Value = {}]",
-        //     std::any::type_name::<V::Value>()
-        // );
+        #[cfg(feature = "debug-logs")]
+        log::trace!(
+            "deserialize_seq(self, ...) [V::Value = {}]",
+            std::any::type_name::<V::Value>()
+        );
 
         self.require_single_column::<V::Value, V>()?
             .deserialize_seq(visitor)
@@ -112,12 +115,13 @@ impl<'a, 'de> Deserializer<'de> for DeRow<'a> {
     where
         V: Visitor<'de>,
     {
-        // log::trace!(
-        //     "deserialize_struct(self, name: {:?}, fields: {:?}, ...) [V::Value = {}]",
-        //     name,
-        //     fields,
-        //     std::any::type_name::<V::Value>()
-        // );
+        #[cfg(feature = "debug-logs")]
+        log::trace!(
+            "deserialize_struct(self, name: {:?}, fields: {:?}, ...) [V::Value = {}]",
+            name,
+            fields,
+            std::any::type_name::<V::Value>()
+        );
 
         let ma = DeRowStruct::new(&self, name, fields);
 
@@ -128,10 +132,11 @@ impl<'a, 'de> Deserializer<'de> for DeRow<'a> {
     where
         V: Visitor<'de>,
     {
-        // log::trace!(
-        //     "deserialize_map(self, ...) [V::Value = {}]",
-        //     std::any::type_name::<V::Value>()
-        // );
+        #[cfg(feature = "debug-logs")]
+        log::trace!(
+            "deserialize_map(self, ...) [V::Value = {}]",
+            std::any::type_name::<V::Value>()
+        );
 
         let ma = DeRowMap::new(&self);
 
@@ -142,10 +147,11 @@ impl<'a, 'de> Deserializer<'de> for DeRow<'a> {
     where
         V: Visitor<'de>,
     {
-        // log::trace!(
-        //     "deserialize_bool(self, ...) [V::Value = {}]",
-        //     std::any::type_name::<V::Value>()
-        // );
+        #[cfg(feature = "debug-logs")]
+        log::trace!(
+            "deserialize_bool(self, ...) [V::Value = {}]",
+            std::any::type_name::<V::Value>()
+        );
 
         self.require_single_column::<bool, V>()?
             .deserialize_bool(visitor)
@@ -155,10 +161,11 @@ impl<'a, 'de> Deserializer<'de> for DeRow<'a> {
     where
         V: Visitor<'de>,
     {
-        // log::trace!(
-        //     "deserialize_i8(self, ...) [V::Value = {}]",
-        //     std::any::type_name::<V::Value>()
-        // );
+        #[cfg(feature = "debug-logs")]
+        log::trace!(
+            "deserialize_i8(self, ...) [V::Value = {}]",
+            std::any::type_name::<V::Value>()
+        );
 
         self.require_single_column::<i8, V>()?
             .deserialize_i8(visitor)
@@ -168,10 +175,11 @@ impl<'a, 'de> Deserializer<'de> for DeRow<'a> {
     where
         V: Visitor<'de>,
     {
-        // log::trace!(
-        //     "deserialize_i16(self, ...) [V::Value = {}]",
-        //     std::any::type_name::<V::Value>()
-        // );
+        #[cfg(feature = "debug-logs")]
+        log::trace!(
+            "deserialize_i16(self, ...) [V::Value = {}]",
+            std::any::type_name::<V::Value>()
+        );
 
         self.require_single_column::<i16, V>()?
             .deserialize_i16(visitor)
@@ -181,10 +189,11 @@ impl<'a, 'de> Deserializer<'de> for DeRow<'a> {
     where
         V: Visitor<'de>,
     {
-        // log::trace!(
-        //     "deserialize_i32(self, ...) [V::Value = {}]",
-        //     std::any::type_name::<V::Value>()
-        // );
+        #[cfg(feature = "debug-logs")]
+        log::trace!(
+            "deserialize_i32(self, ...) [V::Value = {}]",
+            std::any::type_name::<V::Value>()
+        );
 
         self.require_single_column::<i32, V>()?
             .deserialize_i32(visitor)
@@ -194,10 +203,11 @@ impl<'a, 'de> Deserializer<'de> for DeRow<'a> {
     where
         V: Visitor<'de>,
     {
-        // log::trace!(
-        //     "deserialize_i64(self, ...) [V::Value = {}]",
-        //     std::any::type_name::<V::Value>()
-        // );
+        #[cfg(feature = "debug-logs")]
+        log::trace!(
+            "deserialize_i64(self, ...) [V::Value = {}]",
+            std::any::type_name::<V::Value>()
+        );
 
         self.require_single_column::<i32, V>()?
             .deserialize_i64(visitor)
@@ -207,10 +217,11 @@ impl<'a, 'de> Deserializer<'de> for DeRow<'a> {
     where
         V: Visitor<'de>,
     {
-        // log::trace!(
-        //     "deserialize_u8(self, ...) [V::Value = {}]",
-        //     std::any::type_name::<V::Value>()
-        // );
+        #[cfg(feature = "debug-logs")]
+        log::trace!(
+            "deserialize_u8(self, ...) [V::Value = {}]",
+            std::any::type_name::<V::Value>()
+        );
 
         self.require_single_column::<u8, V>()?
             .deserialize_u8(visitor)
@@ -220,10 +231,11 @@ impl<'a, 'de> Deserializer<'de> for DeRow<'a> {
     where
         V: Visitor<'de>,
     {
-        // log::trace!(
-        //     "deserialize_u16(self, ...) [V::Value = {}]",
-        //     std::any::type_name::<V::Value>()
-        // );
+        #[cfg(feature = "debug-logs")]
+        log::trace!(
+            "deserialize_u16(self, ...) [V::Value = {}]",
+            std::any::type_name::<V::Value>()
+        );
 
         self.require_single_column::<u16, V>()?
             .deserialize_u16(visitor)
@@ -233,10 +245,11 @@ impl<'a, 'de> Deserializer<'de> for DeRow<'a> {
     where
         V: Visitor<'de>,
     {
-        // log::trace!(
-        //     "deserialize_u32(self, ...) [V::Value = {}]",
-        //     std::any::type_name::<V::Value>()
-        // );
+        #[cfg(feature = "debug-logs")]
+        log::trace!(
+            "deserialize_u32(self, ...) [V::Value = {}]",
+            std::any::type_name::<V::Value>()
+        );
 
         self.require_single_column::<u32, V>()?
             .deserialize_u32(visitor)
@@ -246,10 +259,11 @@ impl<'a, 'de> Deserializer<'de> for DeRow<'a> {
     where
         V: Visitor<'de>,
     {
-        // log::trace!(
-        //     "deserialize_u64(self, ...) [V::Value = {}]",
-        //     std::any::type_name::<V::Value>()
-        // );
+        #[cfg(feature = "debug-logs")]
+        log::trace!(
+            "deserialize_u64(self, ...) [V::Value = {}]",
+            std::any::type_name::<V::Value>()
+        );
 
         self.require_single_column::<i32, V>()?
             .deserialize_u64(visitor)
@@ -259,10 +273,11 @@ impl<'a, 'de> Deserializer<'de> for DeRow<'a> {
     where
         V: Visitor<'de>,
     {
-        // log::trace!(
-        //     "deserialize_f32(self, ...) [V::Value = {}]",
-        //     std::any::type_name::<V::Value>()
-        // );
+        #[cfg(feature = "debug-logs")]
+        log::trace!(
+            "deserialize_f32(self, ...) [V::Value = {}]",
+            std::any::type_name::<V::Value>()
+        );
 
         self.require_single_column::<f32, V>()?
             .deserialize_f32(visitor)
@@ -272,10 +287,11 @@ impl<'a, 'de> Deserializer<'de> for DeRow<'a> {
     where
         V: Visitor<'de>,
     {
-        // log::trace!(
-        //     "deserialize_f64(self, ...) [V::Value = {}]",
-        //     std::any::type_name::<V::Value>()
-        // );
+        #[cfg(feature = "debug-logs")]
+        log::trace!(
+            "deserialize_f64(self, ...) [V::Value = {}]",
+            std::any::type_name::<V::Value>()
+        );
 
         self.require_single_column::<f64, V>()?
             .deserialize_f64(visitor)
@@ -285,10 +301,11 @@ impl<'a, 'de> Deserializer<'de> for DeRow<'a> {
     where
         V: Visitor<'de>,
     {
-        // log::trace!(
-        //     "deserialize_string(self, ...) [V::Value = {}]",
-        //     std::any::type_name::<V::Value>()
-        // );
+        #[cfg(feature = "debug-logs")]
+        log::trace!(
+            "deserialize_string(self, ...) [V::Value = {}]",
+            std::any::type_name::<V::Value>()
+        );
 
         self.require_single_column::<String, V>()?
             .deserialize_string(visitor)
@@ -298,10 +315,11 @@ impl<'a, 'de> Deserializer<'de> for DeRow<'a> {
     where
         V: Visitor<'de>,
     {
-        // log::trace!(
-        //     "deserialize_option(self, ...) [V::Value = {}]",
-        //     std::any::type_name::<V::Value>()
-        // );
+        #[cfg(feature = "debug-logs")]
+        log::trace!(
+            "deserialize_option(self, ...) [V::Value = {}]",
+            std::any::type_name::<V::Value>()
+        );
 
         self.require_single_column::<Option<V::Value>, V>()?
             .deserialize_option(visitor)
@@ -315,11 +333,12 @@ impl<'a, 'de> Deserializer<'de> for DeRow<'a> {
     where
         V: Visitor<'de>,
     {
-        // log::trace!(
-        //     "deserialize_newtype_struct(self, name: {:?} ...) [V::Value = {}]",
-        //     name,
-        //     std::any::type_name::<V::Value>()
-        // );
+        #[cfg(feature = "debug-logs")]
+        log::trace!(
+            "deserialize_newtype_struct(self, name: {:?} ...) [V::Value = {}]",
+            name,
+            std::any::type_name::<V::Value>()
+        );
 
         self.require_single_column::<Option<V::Value>, V>()?
             .deserialize_newtype_struct(name, visitor)
