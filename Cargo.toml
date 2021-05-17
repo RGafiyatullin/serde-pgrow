@@ -1,9 +1,9 @@
 [package]
 name = "serde-pgrow"
-version = "0.3.3"
+version = "0.3.4"
 authors = ["Roman Gafiyatullin <r.gafiyatullin@me.com>"]
 edition = "2018"
-license-file = "LICENSE"
+license = "MIT"
 repository = "https://github.com/RGafiyatullin/serde-pgrow"
 description = "Deserialize a serde-type from a PgRow"
 
