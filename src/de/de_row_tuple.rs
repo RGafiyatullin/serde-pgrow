@@ -3,6 +3,7 @@ use super::*;
 #[derive(Debug)]
 pub struct DeRowTuple<'a> {
     pub(super) de_row: &'a DeRow<'a>,
+    #[allow(unused)]
     pub(super) struct_name: Option<&'static str>,
     pub(super) keys: std::ops::Range<usize>,
 }

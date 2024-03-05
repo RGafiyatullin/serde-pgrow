@@ -3,6 +3,7 @@ use super::*;
 #[derive(Debug)]
 pub struct DeRowStruct<'a> {
     pub(super) de_row: &'a DeRow<'a>,
+    #[allow(unused)]
     pub(super) struct_name: &'static str,
     pub(super) keys: std::slice::Iter<'static, &'static str>,
     pub(super) values: std::slice::Iter<'static, &'static str>,
