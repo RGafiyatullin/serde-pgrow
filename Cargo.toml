@@ -1,8 +1,8 @@
 [package]
 name = "serde-pgrow"
-version = "0.3.4"
+version = "0.3.5"
 authors = ["Roman Gafiyatullin <r.gafiyatullin@me.com>"]
-edition = "2018"
+edition = "2021"
 license = "MIT"
 repository = "https://github.com/RGafiyatullin/serde-pgrow"
 description = "Deserialize a serde-type from a PgRow"
@@ -26,4 +26,4 @@ debug-logs = ["log"]
 tokio = {version = "^1", features = ["full"]}
 serde = {version = "^1", features = ["derive"]}
 futures = {version = "^0.3"}
-pretty_env_logger = "^0.4"
+pretty_env_logger = "^0.5"
